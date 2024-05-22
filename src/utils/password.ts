@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 
-export const hashString = async (str: string) => {
+export const hashPassword = async (str: string) => {
     const salt = process.env.SALT_ROUNDS
     
     if(salt === undefined) {
@@ -15,6 +15,6 @@ export const hashString = async (str: string) => {
     return bcrypt.hash(str, saltRouds)
 }
 
-export const compareHash = async (str: string, hash: string) => {
+export const comparePassword = async (str: string, hash: string) => {
     return bcrypt.compare(str, hash)
 }

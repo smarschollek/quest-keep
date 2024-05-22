@@ -1,5 +1,5 @@
 "use client"
-import { login } from "@/app/login/actions"
+import { emailLogin } from "@/utils/session"
 import { VisibilityOff, Visibility } from "@mui/icons-material"
 import { Box, Button, Card, IconButton, InputAdornment, OutlinedInput, Stack, TextField, Typography } from "@mui/material"
 import Image from "next/image"
@@ -16,15 +16,6 @@ export const LoginForm = () => {
     const { formState, control, handleSubmit } = useForm<LoginFormValues>()
     const { isValid } = formState
 
-    const triggerLoginServerAction = async (data: LoginFormValues) => {
-        const result = await login(data.email, data.password)
-        if (result) {
-            alert('Login successful')
-        } else {
-            alert('Login failed')
-        }
-    }
-
     const [showPassword, setShowPassword] = useState(false)
 
     const toggleShowPassword = () => {
@@ -39,14 +30,14 @@ export const LoginForm = () => {
                 width: 400,
             }}
         >
-            <Stack spacing={2} component={'form'} onSubmit={handleSubmit(triggerLoginServerAction)}>
+            <Stack spacing={2} component={'form'} action={emailLogin}>
                 <Box
                     display={'flex'}
                     justifyContent={'center'}
                 >
                     <Image
                         alt="QuestKeep Logo"
-                        src='/quest-keep.png'
+                        src='/logo.svg'
                         width={212}
                         height={212}
                     />

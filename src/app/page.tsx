@@ -1,11 +1,16 @@
-import Image from "next/image";
-import styles from "./page.module.css";
-import { Button } from "@mui/material";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
+import { LogoutButton } from "@/components/LogoutButton";
 
-export default function Home() {
+export default async function Home() {
+    const session = await auth()
+    if (!session) redirect('/login')
+
     return (
         <main>
             Hello
-        </main>
+
+            <LogoutButton />
+        </main >
     );
 }

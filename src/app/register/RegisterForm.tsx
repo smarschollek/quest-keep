@@ -46,7 +46,7 @@ export const RegisterForm = () => {
                 >
                     <Image
                         alt="QuestKeep Logo"
-                        src='/quest-keep.png'
+                        src='/logo.svg'
                         width={212}
                         height={212}
                     />
@@ -60,10 +60,11 @@ export const RegisterForm = () => {
                     control={control}
                     rules={{ required: true }}
                     render={({ field }) => (
-                        <OutlinedInput
+                        <TextField
                             {...field}
                             placeholder="Username"
                             error={!!formState.errors.username}
+                            helperText={formState.errors.username ? 'Username is required' : ' '}
                         />
                     )}
                 />
@@ -75,10 +76,11 @@ export const RegisterForm = () => {
                         required: true, pattern: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g
                     }}
                     render={({ field }) => (
-                        <OutlinedInput
+                        <TextField
                             {...field}
                             placeholder="Email"
                             error={!!formState.errors.email}
+                            helperText={formState.errors.email ? 'Invalid email' : ' '}
                         />
                     )}
                 />
@@ -92,6 +94,7 @@ export const RegisterForm = () => {
                             {...field}
                             placeholder="Password"
                             type={showPassword ? 'text' : 'password'}
+                            helperText={formState.errors.password ? 'Password is required' : ' '}
                             error={!!formState.errors.password}
                             InputProps={{
                                 endAdornment: (
@@ -121,4 +124,4 @@ export const RegisterForm = () => {
             </Stack>
         </Card >
     )
-}
+}   
