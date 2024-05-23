@@ -1,5 +1,7 @@
 "use client"
 import { emailLogin } from "@/utils/session"
+import { loginFormSchema } from "@/utils/validation"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { VisibilityOff, Visibility } from "@mui/icons-material"
 import { Box, Button, Card, IconButton, InputAdornment, OutlinedInput, Stack, TextField, Typography } from "@mui/material"
 import Image from "next/image"
@@ -13,7 +15,10 @@ type LoginFormValues = {
 
 export const LoginForm = () => {
 
-    const { formState, control, handleSubmit } = useForm<LoginFormValues>()
+    const { formState, control } = useForm<LoginFormValues>({
+        mode: 'all',
+        resolver: zodResolver(loginFormSchema)
+    })
     const { isValid } = formState
 
     const [showPassword, setShowPassword] = useState(false)
@@ -50,14 +55,10 @@ export const LoginForm = () => {
                 <Controller
                     name='email'
                     control={control}
-                    rules={{
-                        required: true, pattern: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g
-                    }}
                     render={({ field }) => (
                         <OutlinedInput
                             {...field}
                             placeholder="Email"
-                            error={!!formState.errors.email}
                         />
                     )}
                 />
@@ -65,13 +66,11 @@ export const LoginForm = () => {
                 <Controller
                     name='password'
                     control={control}
-                    rules={{ required: true }}
                     render={({ field }) => (
                         <TextField
                             {...field}
                             placeholder="Password"
                             type={showPassword ? 'text' : 'password'}
-                            error={!!formState.errors.password}
                             InputProps={{
                                 endAdornment: (
                                     <InputAdornment position="end">

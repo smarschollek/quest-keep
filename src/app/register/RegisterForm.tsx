@@ -1,9 +1,12 @@
 'use client'
-import { register } from "@/app/register/actions"
+import { State, registerNewUser } from "@/app/register/actions"
+import { registerUserFormSchema } from "@/utils/validation"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { Visibility, VisibilityOff } from "@mui/icons-material"
 import { Box, Button, Card, IconButton, InputAdornment, OutlinedInput, Stack, TextField, Typography } from "@mui/material"
 import Image from "next/image"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useFormState } from "react-dom"
 import { Controller, useForm } from "react-hook-form"
 
 export type RegisterFormValues = {
@@ -14,16 +17,32 @@ export type RegisterFormValues = {
 
 export const RegisterForm = () => {
 
-    const { formState, control, handleSubmit } = useForm<RegisterFormValues>(
+    const [state, formAction] = useFormState<State, FormData>(registerNewUser, null)
+
+    const { formState, control, setError } = useForm<RegisterFormValues>(
         {
-            mode: 'onChange'
+            mode: 'all',
+            resolver: zodResolver(registerUserFormSchema)
         }
     )
+
     const { isValid } = formState
 
-    const triggerRegisterServerAction = (values: RegisterFormValues) => {
-        register(values.username, values.email, values.password)
-    }
+    useEffect(() => {
+        if (!state) {
+            return;
+        }
+
+        if (state.status === "error") {
+            state.errors?.forEach(error => {
+                setError(error.path as keyof RegisterFormValues, { message: error.message })
+            })
+        }
+
+        if (state.status === "success") {
+            alert(state.message);
+        }
+    }, [setError, state]);
 
     const [showPassword, setShowPassword] = useState(false)
 
@@ -32,6 +51,7 @@ export const RegisterForm = () => {
     }
 
     return (
+
         <Card
             elevation={2}
             sx={{
@@ -39,7 +59,7 @@ export const RegisterForm = () => {
                 width: 400,
             }}
         >
-            <Stack spacing={2} component={'form'} onSubmit={handleSubmit(triggerRegisterServerAction)}>
+            <Stack spacing={2} component={'form'} action={formAction}>
                 <Box
                     display={'flex'}
                     justifyContent={'center'}
@@ -58,13 +78,12 @@ export const RegisterForm = () => {
                 <Controller
                     name='username'
                     control={control}
-                    rules={{ required: true }}
                     render={({ field }) => (
                         <TextField
                             {...field}
                             placeholder="Username"
                             error={!!formState.errors.username}
-                            helperText={formState.errors.username ? 'Username is required' : ' '}
+                            helperText={formState.errors.username ? formState.errors.username.message : ' '}
                         />
                     )}
                 />
@@ -72,15 +91,12 @@ export const RegisterForm = () => {
                 <Controller
                     name='email'
                     control={control}
-                    rules={{
-                        required: true, pattern: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g
-                    }}
                     render={({ field }) => (
                         <TextField
                             {...field}
                             placeholder="Email"
                             error={!!formState.errors.email}
-                            helperText={formState.errors.email ? 'Invalid email' : ' '}
+                            helperText={formState.errors.email ? formState.errors.email.message : ' '}
                         />
                     )}
                 />
@@ -88,13 +104,12 @@ export const RegisterForm = () => {
                 <Controller
                     name='password'
                     control={control}
-                    rules={{ required: true }}
                     render={({ field }) => (
                         <TextField
                             {...field}
                             placeholder="Password"
                             type={showPassword ? 'text' : 'password'}
-                            helperText={formState.errors.password ? 'Password is required' : ' '}
+                            helperText={formState.errors.password ? formState.errors.password.message : ' '}
                             error={!!formState.errors.password}
                             InputProps={{
                                 endAdornment: (
