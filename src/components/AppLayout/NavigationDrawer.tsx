@@ -1,7 +1,8 @@
 'use client'
 
-import { Home, Settings } from "@mui/icons-material"
-import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack } from "@mui/material"
+import { CalendarMonth, Home, LiveHelp, Person, Room, Settings } from "@mui/icons-material"
+import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material"
+import Link from "next/link"
 
 const drawerWidth = 240
 
@@ -23,7 +24,7 @@ export const NavigationDrawer = () => {
         >
             <List>
                 <ListItem disablePadding>
-                    <ListItemButton>
+                    <ListItemButton href="/app" LinkComponent={Link}>
                         <ListItemIcon>
                             <Home />
                         </ListItemIcon>
@@ -31,7 +32,39 @@ export const NavigationDrawer = () => {
                     </ListItemButton>
                 </ListItem>
                 <ListItem disablePadding>
-                    <ListItemButton>
+                    <ListItemButton href="/app/sessions" LinkComponent={Link}>
+                        <ListItemIcon>
+                            <CalendarMonth />
+                        </ListItemIcon>
+                        <ListItemText primary={'Sessions'} />
+                    </ListItemButton>
+                </ListItem>
+                <ListItem disablePadding>
+                    <ListItemButton href="/app/quests" LinkComponent={Link}>
+                        <ListItemIcon>
+                            <LiveHelp />
+                        </ListItemIcon>
+                        <ListItemText primary={'Quests'} />
+                    </ListItemButton>
+                </ListItem>
+                <ListItem disablePadding>
+                    <ListItemButton href="/app/places" LinkComponent={Link}>
+                        <ListItemIcon>
+                            <Room />
+                        </ListItemIcon>
+                        <ListItemText primary={'Places'} />
+                    </ListItemButton>
+                </ListItem>
+                <ListItem disablePadding>
+                    <ListItemButton href="/app/characters" LinkComponent={Link}>
+                        <ListItemIcon>
+                            <Person />
+                        </ListItemIcon>
+                        <ListItemText primary={'Characters'} />
+                    </ListItemButton>
+                </ListItem>
+                <ListItem disablePadding>
+                    <ListItemButton href="/app/settings" LinkComponent={Link}>
                         <ListItemIcon>
                             <Settings />
                         </ListItemIcon>
