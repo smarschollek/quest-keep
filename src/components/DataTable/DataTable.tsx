@@ -1,5 +1,6 @@
 "use client"
-import { ActionButtonGroup } from "@/components/DataTable/ActionButtonGroup"
+import { Add, Create, Delete, Edit } from "@mui/icons-material"
+import { Box, IconButton, Paper, Stack, Toolbar } from "@mui/material"
 import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid"
 
 export type DataTableProps = {
@@ -9,14 +10,33 @@ export type DataTableProps = {
 
 export const DataTable = ({ columns, rows }: DataTableProps) => {
     const combinedColumns: GridColDef[] = [
-        { field: 'id', headerName: 'Actions', width: 200, disableColumnMenu: true, sortable: false, renderCell: ActionButtonGroup },
         ...columns
     ]
 
     return (
-        <DataGrid
-            rows={rows}
-            columns={combinedColumns}
-        />
+        <Stack spacing={2}>
+            <Paper>
+                <Stack padding={1}>
+                    <Box>
+                        <IconButton>
+                            <Add />
+                        </IconButton>
+                        <IconButton>
+                            <Edit />
+                        </IconButton>
+                        <IconButton>
+                            <Delete />
+                        </IconButton>
+                    </Box>
+                </Stack>
+            </Paper>
+
+            <DataGrid
+                disableRowSelectionOnClick
+                checkboxSelection
+                rows={rows}
+                columns={combinedColumns}
+            />
+        </Stack>
     )
 }

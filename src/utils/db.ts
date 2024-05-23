@@ -2,8 +2,9 @@ import Database from "better-sqlite3";
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 import * as schema from "../../db/schema";
-import { User } from "@/types";
+import { Place, User } from "@/types";
 import { Pool } from "pg";
+import { PageRequest } from "@/components/DataTable";
 
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
@@ -39,3 +40,30 @@ export const getUserFromDb = async (email: string) : Promise<User | undefined> =
 
     return user
 }
+
+
+//#region Places
+
+export const getPlaces = async (request: PageRequest) : Promise<Place[]> => {
+    return await db.query.places.findMany({
+        offset: request.pageIndex * request.pageSize,
+        limit: request.pageSize
+    })
+}
+
+//#endregion
+
+//#region Quests
+
+export const getQuests = async (request: PageRequest) : Promise<Place[]> => {
+    return await db.query.quests.findMany({
+        offset: request.pageIndex * request.pageSize,
+        limit: request.pageSize,
+        with: {
+            place: true,
+            creator: true
+        }
+    })
+}
+
+//#endregion
