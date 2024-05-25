@@ -2,7 +2,7 @@ import Database from "better-sqlite3";
 import { eq, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 import * as schema from "../../db/schema";
-import { Place, User } from "@/types";
+import { Place, Quest, User } from "@/types";
 import { Pool } from "pg";
 import { PageRequest } from "@/components/DataTable";
 
@@ -72,6 +72,14 @@ export const addQuest = async (name: string, description: string, placeId: numbe
     }).returning()
 }
 
+export const updateQUest = async (id: number, name: string, description: string, placeId: number) : Promise<void> => {
+    await db.update(schema.quests).set({
+        name,
+        description,
+        placeId
+    }).where(eq(schema.quests.id, id)).returning()
+}
+
 export const getQuests = async (request: PageRequest) : Promise<Place[]> => {
     return await db.query.quests.findMany({
         offset: request.pageIndex * request.pageSize,
@@ -93,6 +101,16 @@ export const checkIfQuestNameIsFree = async (name: string) : Promise<boolean> =>
     })
 
     return quest === undefined
+}
+
+export const getQuestById = async (id: number) : Promise<Quest | undefined> => {
+    return await db.query.quests.findFirst({
+        where: eq(schema.quests.id, id),
+        with: {
+            creator: true,
+            place: true
+        }
+    })   
 }
 
 //#endregion

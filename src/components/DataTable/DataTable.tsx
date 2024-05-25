@@ -10,10 +10,11 @@ export type DataTableProps = {
     columns: GridColDef[]
 
     addAction?: () => void
+    editAction?: (id: number) => void
     deleteAction?: (ids: number[]) => Promise<void>
 }
 
-export const DataTable = ({ columns, rows, addAction, deleteAction }: DataTableProps) => {
+export const DataTable = ({ columns, rows, addAction, deleteAction, editAction }: DataTableProps) => {
     const combinedColumns: GridColDef[] = [
         ...columns
     ]
@@ -52,6 +53,7 @@ export const DataTable = ({ columns, rows, addAction, deleteAction }: DataTableP
                             </IconButton>
                             <IconButton
                                 disabled={!isEditActive}
+                                onClick={() => editAction?.(rowSelectionModel[0] as number)}
                             >
                                 <Edit />
                             </IconButton>

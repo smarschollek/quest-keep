@@ -9,6 +9,7 @@ import { useFormState } from "react-dom"
 import { Controller, useForm } from "react-hook-form"
 
 type EditQuestFormValues = {
+    id: number
     name: string
     description: string
     place: number
@@ -49,11 +50,18 @@ export const EditQuestForm = ({
     return (
         <Stack component={'form'} action={formAction} spacing={2}>
             <Controller
+                name='id'
+                control={control}
+                render={({ field }) => (<input type="hidden" name={field.name} value={field.value} />)}
+            />
+
+            <Controller
                 name='name'
                 control={control}
                 render={({ field }) => (
                     <TextField
                         {...field}
+                        autoComplete="off"
                         placeholder="Name"
                         error={!!formState.errors.name}
                         helperText={formState.errors.name ? formState.errors.name.message : ' '}
@@ -94,14 +102,13 @@ export const EditQuestForm = ({
             />
 
             <Button
+                size="large"
                 type="submit"
                 variant="contained"
                 disabled={!formState.isValid}
             >
                 Submit
             </Button>
-
-            <>{JSON.stringify(formState)}</>
         </Stack>
     )
 }

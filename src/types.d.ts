@@ -12,6 +12,15 @@ export type Place = {
     image: string | null
 }
 
+export type Quest = {
+    id: number
+    name: string
+    description: string | null
+    image: string | null
+    placeId: number
+    creatorId: number
+}
+
 export type State = 
     { status: "success", message: string } |
     {
