@@ -1,5 +1,5 @@
 import Database from "better-sqlite3";
-import { eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 import * as schema from "../../db/schema";
 import { Place, User } from "@/types";
@@ -51,6 +51,10 @@ export const getPlaces = async (request: PageRequest) : Promise<Place[]> => {
     })
 }
 
+export const deletePlaces = async (ids: number[]) : Promise<void> => {
+    await db.delete(schema.places).where(inArray(schema.places.id, ids)).returning()
+}
+
 //#endregion
 
 //#region Quests
@@ -60,10 +64,14 @@ export const getQuests = async (request: PageRequest) : Promise<Place[]> => {
         offset: request.pageIndex * request.pageSize,
         limit: request.pageSize,
         with: {
-            place: true,
-            creator: true
+            creator: true,
+            place: true
         }
     })
+}
+
+export const deleteQuests = async (ids: number[]) : Promise<void> => {
+    await db.delete(schema.quests).where(inArray(schema.quests.id, ids)).returning()
 }
 
 //#endregion

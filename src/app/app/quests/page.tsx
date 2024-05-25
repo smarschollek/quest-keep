@@ -1,3 +1,4 @@
+import { deleteQuestsAction } from "@/app/app/quests/actions";
 import { columns } from "@/app/app/quests/columns";
 import { DataTable } from "@/components/DataTable";
 import { getQuests } from "@/utils/db";
@@ -15,6 +16,8 @@ export default async function PlacesPags() {
                 <DataTable
                     columns={columns}
                     rows={rows}
+
+                    deleteAction={deleteQuestsAction}
                 />
             </Stack>
         </main>

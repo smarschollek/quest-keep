@@ -1,7 +1,8 @@
+import { deletePlacesAction } from "@/app/app/places/actions";
 import { DataTable } from "@/components/DataTable";
 import { getPlaces } from "@/utils/db";
 import { Stack } from "@mui/material";
-import { GridColDef, GridRowsProp } from "@mui/x-data-grid";
+import { GridColDef } from "@mui/x-data-grid";
 
 const columns: GridColDef[] = [
     { field: 'name', headerName: 'Name', width: 250 },
@@ -20,6 +21,8 @@ export default async function PlacesPags() {
                 <DataTable
                     columns={columns}
                     rows={rows}
+
+                    deleteAction={deletePlacesAction}
                 />
             </Stack>
         </main>

@@ -38,8 +38,8 @@ export const quests = pgTable('quests', {
     name: text('name').notNull(),
     description: text('description'),
     image: text('image'),
-    placeId: serial('place_id').notNull(),
-    creatorId: serial('creator_id').notNull()
+    placeId: serial('place_id').references(() => places.id, {onDelete: 'cascade'}).notNull(),
+    creatorId: serial('creator_id').references(() => users.id, {onDelete: 'cascade'}).notNull(),
 })
 
 export const questRelations = relations(quests, ({one}) => ({

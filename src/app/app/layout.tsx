@@ -1,9 +1,14 @@
+import { auth } from "@/auth";
 import { NavigationDrawer } from "@/components/AppLayout/NavigationDrawer";
 import { TopBar } from "@/components/AppLayout/TopBar";
 import { Box } from "@mui/material";
+import { redirect } from "next/navigation";
 import { PropsWithChildren } from "react";
 
-export default function AppLayout({ children }: PropsWithChildren<{}>) {
+export default async function AppLayout({ children }: PropsWithChildren<{}>) {
+    const session = await auth()
+    if (!session) redirect('/login')
+
     return (
         <>
             <TopBar />
