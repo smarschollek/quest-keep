@@ -2,7 +2,7 @@
 
 import { auth } from "@/auth"
 import { State } from "@/types"
-import { addQuest, deleteQuests, getAllPlaces } from "@/utils/db"
+import { addQuest, checkIfQuestNameIsFree, deleteQuests, getAllPlaces } from "@/utils/db"
 import { convertZodErrorToState, editQuestFormSchema } from "@/utils/validation"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
@@ -24,9 +24,21 @@ export const createQuestAction = async (prevState: State | null, data : FormData
 
         const session = await auth()
         
+        const isNameFree = await checkIfQuestNameIsFree(name)
+        if(!isNameFree) {
+            return {
+                status: 'error',
+                message: 'Name is already in use',
+                errors: [{
+                    path: 'name',
+                    message: 'Name is already in use'
+                }]
+            }
+        }
+
         await addQuest(
             name,
-            description,
+            description ?? '',
             place,
             parseInt(session?.user?.id)
         )

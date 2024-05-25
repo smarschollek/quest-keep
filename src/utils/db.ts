@@ -87,4 +87,12 @@ export const deleteQuests = async (ids: number[]) : Promise<void> => {
     await db.delete(schema.quests).where(inArray(schema.quests.id, ids)).returning()
 }
 
+export const checkIfQuestNameIsFree = async (name: string) : Promise<boolean> => {
+    const quest = await db.query.quests.findFirst({
+        where: eq(schema.quests.name, name)
+    })
+
+    return quest === undefined
+}
+
 //#endregion

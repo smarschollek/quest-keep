@@ -14,7 +14,7 @@ export default async function AddQuestPage() {
                 defaultValues={{
                     name: '',
                     description: '',
-                    place: 0
+                    place: -1
                 }}
                 placeOptions={placeOptions}
             />

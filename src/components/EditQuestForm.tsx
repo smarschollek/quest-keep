@@ -37,7 +37,14 @@ export const EditQuestForm = ({
         if (state?.status === "success") {
             redirect('/app/quests')
         }
-    }, [state])
+
+        if (state?.status === "error") {
+            state.errors?.forEach((error) => {
+                setError(error.path as keyof EditQuestFormValues, { message: error.message })
+            })
+        }
+
+    }, [setError, state])
 
     return (
         <Stack component={'form'} action={formAction} spacing={2}>
