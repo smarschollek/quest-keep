@@ -44,11 +44,15 @@ export const getUserFromDb = async (email: string) : Promise<User | undefined> =
 
 //#region Places
 
-export const getPlaces = async (request: PageRequest) : Promise<Place[]> => {
+export const getPlacesPaged = async (request: PageRequest) : Promise<Place[]> => {
     return await db.query.places.findMany({
         offset: request.pageIndex * request.pageSize,
         limit: request.pageSize
     })
+}
+
+export const getAllPlaces = async () : Promise<Place[]> => {
+    return await db.query.places.findMany()
 }
 
 export const deletePlaces = async (ids: number[]) : Promise<void> => {
@@ -58,6 +62,15 @@ export const deletePlaces = async (ids: number[]) : Promise<void> => {
 //#endregion
 
 //#region Quests
+
+export const addQuest = async (name: string, description: string, placeId: number, creatorId: number) : Promise<void> => {
+    await db.insert(schema.quests).values({
+        name,
+        description,
+        placeId,
+        creatorId
+    }).returning()
+}
 
 export const getQuests = async (request: PageRequest) : Promise<Place[]> => {
     return await db.query.quests.findMany({

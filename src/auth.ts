@@ -30,6 +30,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             }
 
             return {
+                id: user.id.toString(),
                 email: user.email,
                 name: user.name
             }
@@ -37,8 +38,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     })
   ],
   callbacks: {
-    redirect: async ({url, baseUrl}) => {
+    redirect: async () => {
         return '/'
+    },
+    session: async ({session, token}) => {
+        session.user.id = token.sub
+        return session
     }
   }
 })

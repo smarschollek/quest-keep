@@ -1,20 +1,9 @@
 'use server'
 import { hashPassword } from '@/utils/password';
 import { addUser, checkIfEmailIsFree, checkIfUsernameIsFree } from '@/utils/db';
-import { registerUserFormSchema } from '@/utils/validation';
+import { convertZodErrorToState, registerUserFormSchema } from '@/utils/validation';
 import { ZodError } from 'zod';
-
-export type State = 
-    { status: "success", message: string } |
-    {
-        status: "error";
-        message: string;
-        errors?: Array<{
-            path: string;
-                message: string;
-        }>;
-    } |
-    null
+import { State } from '@/types';
 
 export const registerNewUser = async (prevState: State | null, data : FormData) : Promise<State> => {
     try {
@@ -62,14 +51,7 @@ export const registerNewUser = async (prevState: State | null, data : FormData) 
         }
     } catch (error) {
         if(error instanceof ZodError) {
-            return {
-                status: 'error',
-                message: 'Validation error',
-                errors: error.errors.map((e) => ({
-                    path: e.path.join('.'),
-                    message: e.message
-                }))
-            }
+            return convertZodErrorToState(error)
         }
 
         return {

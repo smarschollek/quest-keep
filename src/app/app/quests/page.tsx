@@ -1,6 +1,6 @@
-import { deleteQuestsAction } from "@/app/app/quests/actions";
 import { columns } from "@/app/app/quests/columns";
 import { DataTable } from "@/components/DataTable";
+import { deleteQuestsAction, redirectToAddQuestAction } from "@/utils/actions/questActions";
 import { getQuests } from "@/utils/db";
 import { Stack } from "@mui/material";
 
@@ -17,6 +17,7 @@ export default async function PlacesPags() {
                     columns={columns}
                     rows={rows}
 
+                    addAction={redirectToAddQuestAction}
                     deleteAction={deleteQuestsAction}
                 />
             </Stack>

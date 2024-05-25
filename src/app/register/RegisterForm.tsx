@@ -1,5 +1,6 @@
 'use client'
-import { State, registerNewUser } from "@/app/register/actions"
+import { registerNewUser } from "@/app/register/actions"
+import { State } from "@/types"
 import { registerUserFormSchema } from "@/utils/validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Visibility, VisibilityOff } from "@mui/icons-material"
@@ -9,7 +10,7 @@ import { useEffect, useState } from "react"
 import { useFormState } from "react-dom"
 import { Controller, useForm } from "react-hook-form"
 
-export type RegisterFormValues = {
+type RegisterFormValues = {
     username: string
     email: string
     password: string

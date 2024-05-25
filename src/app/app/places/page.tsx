@@ -1,6 +1,6 @@
 import { deletePlacesAction } from "@/app/app/places/actions";
 import { DataTable } from "@/components/DataTable";
-import { getPlaces } from "@/utils/db";
+import { getPlacesPaged } from "@/utils/db";
 import { Stack } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 
@@ -10,7 +10,7 @@ const columns: GridColDef[] = [
 ]
 
 export default async function PlacesPags() {
-    const rows = await getPlaces({ pageIndex: 0, pageSize: 10 })
+    const rows = await getPlacesPaged({ pageIndex: 0, pageSize: 10 })
 
     return (
         <main>

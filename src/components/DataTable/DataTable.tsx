@@ -9,10 +9,11 @@ export type DataTableProps = {
     rows: GridRowsProp
     columns: GridColDef[]
 
-    deleteAction: (ids: number[]) => Promise<void>
+    addAction?: () => void
+    deleteAction?: (ids: number[]) => Promise<void>
 }
 
-export const DataTable = ({ columns, rows, deleteAction }: DataTableProps) => {
+export const DataTable = ({ columns, rows, addAction, deleteAction }: DataTableProps) => {
     const combinedColumns: GridColDef[] = [
         ...columns
     ]
@@ -36,7 +37,7 @@ export const DataTable = ({ columns, rows, deleteAction }: DataTableProps) => {
         <>
             <DeleteDialog
                 open={showDeleteDialog}
-                onAccept={() => deleteAction(rowSelectionModel as number[])}
+                onAccept={() => deleteAction?.(rowSelectionModel as number[])}
                 onClose={() => setShowDeleteDialog(false)}
                 listItems={selectedItems}
             />
@@ -44,7 +45,9 @@ export const DataTable = ({ columns, rows, deleteAction }: DataTableProps) => {
                 <Paper>
                     <Stack padding={1}>
                         <Box>
-                            <IconButton>
+                            <IconButton
+                                onClick={() => addAction?.()}
+                            >
                                 <Add />
                             </IconButton>
                             <IconButton
