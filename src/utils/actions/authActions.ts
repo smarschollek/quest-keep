@@ -1,9 +1,29 @@
 'use server'
 import { hashPassword } from '@/utils/password';
 import { addUser, checkIfEmailIsFree, checkIfUsernameIsFree } from '@/utils/db';
-import { convertZodErrorToState, registerUserFormSchema } from '@/utils/validation';
+import { convertZodErrorToState, loginUserFormShema, registerUserFormSchema } from '@/utils/validation';
 import { ZodError } from 'zod';
 import { State } from '@/types';
+import { signIn } from '@/auth';
+
+export const loginUser = async (prevState: State | null, data: FormData) : Promise<State> => {
+
+    try {
+        const {email, password} = loginUserFormShema.parse(data)
+        
+        await signIn('credentials', { redirect: false, email, password })
+
+        return {
+            status: 'success',
+            message: 'User logged in successfully'
+        }    
+    } catch (error) {
+        return {
+            status: 'error',
+            message: 'An error occurred'
+        }
+    }
+}
 
 export const registerNewUser = async (prevState: State | null, data : FormData) : Promise<State> => {
     try {

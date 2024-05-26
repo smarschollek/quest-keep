@@ -14,7 +14,7 @@ export default async function AddQuestPage({ params }: { params: { slug: string 
 
     return (
         <Stack padding={2}>
-            <h2>Edit </h2>
+            <h2>Edit Quest : {quest.name} </h2>
 
             <Box width={800}>
                 <EditQuestForm

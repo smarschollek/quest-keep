@@ -1,11 +1,12 @@
 'use client'
-import { registerNewUser } from "@/app/register/actions"
 import { State } from "@/types"
+import { registerNewUser } from "@/utils/actions/authActions"
 import { registerUserFormSchema } from "@/utils/validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Visibility, VisibilityOff } from "@mui/icons-material"
 import { Box, Button, Card, IconButton, InputAdornment, OutlinedInput, Stack, TextField, Typography } from "@mui/material"
 import Image from "next/image"
+import { redirect } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useFormState } from "react-dom"
 import { Controller, useForm } from "react-hook-form"
@@ -41,7 +42,7 @@ export const RegisterForm = () => {
         }
 
         if (state.status === "success") {
-            alert(state.message);
+            redirect('/login')
         }
     }, [setError, state]);
 

@@ -38,9 +38,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     })
   ],
   callbacks: {
-    redirect: async () => {
-        return '/'
-    },
+    // redirect: async () => {
+    //     return '/'
+    // },
     session: async ({session, token}) => {
         session.user.id = token.sub
         return session

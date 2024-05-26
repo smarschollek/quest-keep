@@ -1,11 +1,14 @@
 "use client"
-import { emailLogin } from "@/utils/session"
+import { State } from "@/types"
+import { loginUser } from "@/utils/actions/authActions"
 import { loginFormSchema } from "@/utils/validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { VisibilityOff, Visibility } from "@mui/icons-material"
-import { Box, Button, Card, IconButton, InputAdornment, OutlinedInput, Stack, TextField, Typography } from "@mui/material"
+import { Alert, Box, Button, Card, IconButton, InputAdornment, Stack, TextField, Typography } from "@mui/material"
 import Image from "next/image"
-import { useState } from "react"
+import { redirect } from "next/navigation"
+import { useEffect, useState } from "react"
+import { useFormState } from "react-dom"
 import { Controller, useForm } from "react-hook-form"
 
 type LoginFormValues = {
@@ -15,6 +18,8 @@ type LoginFormValues = {
 
 export const LoginForm = () => {
 
+    const [state, formAction] = useFormState<State, FormData>(loginUser, null)
+
     const { formState, control } = useForm<LoginFormValues>({
         mode: 'all',
         resolver: zodResolver(loginFormSchema)
@@ -22,10 +27,25 @@ export const LoginForm = () => {
     const { isValid } = formState
 
     const [showPassword, setShowPassword] = useState(false)
+    const [showError, setShowError] = useState(false)
 
     const toggleShowPassword = () => {
         setShowPassword(!showPassword)
     }
+
+    useEffect(() => {
+        if (!state) {
+            return;
+        }
+
+        if (state.status === "error") {
+            setShowError(true)
+        }
+
+        if (state.status === "success") {
+            redirect('/app')
+        }
+    }, [state])
 
     return (
         <Card
@@ -35,7 +55,7 @@ export const LoginForm = () => {
                 width: 400,
             }}
         >
-            <Stack spacing={2} component={'form'} action={emailLogin}>
+            <Stack spacing={2} component={'form'} action={formAction}>
                 <Box
                     display={'flex'}
                     justifyContent={'center'}
@@ -56,7 +76,7 @@ export const LoginForm = () => {
                     name='email'
                     control={control}
                     render={({ field }) => (
-                        <OutlinedInput
+                        <TextField
                             {...field}
                             placeholder="Email"
                         />
@@ -87,6 +107,13 @@ export const LoginForm = () => {
                         />
                     )}
                 />
+
+                {showError && (
+                    <Alert severity="error">
+                        Invalid Email or Password
+                    </Alert>
+                )}
+
 
                 <Button
                     variant="contained"
