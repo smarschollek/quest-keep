@@ -21,6 +21,14 @@ export type Quest = {
     creatorId: number
 }
 
+export type Character = {
+    id: number
+    name: string
+    description: string | null
+    info: string | null
+    userId: number
+}
+
 export type State = 
     { status: "success", message: string } |
     {

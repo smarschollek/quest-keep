@@ -25,6 +25,13 @@ export const editQuestFormSchema = zfd.formData({
     place: zfd.numeric(z.number().min(0, 'Place must be selected'))
 })
 
+export const editCharacterFormSchema = zfd.formData({
+    id: zfd.numeric(z.number().int()),
+    name: zfd.text(z.string().min(4, 'Name to short').max(64, 'Name to long')),
+    description: zfd.text(z.string().optional()),
+    info: zfd.text(z.string().optional())
+})
+
 
 // helper functions
 

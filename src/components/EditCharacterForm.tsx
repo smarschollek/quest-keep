@@ -1,48 +1,46 @@
 "use client"
-import { AutocompleteOption, State } from "@/types"
-import { editQuestFormSchema } from "@/utils/validation"
+import { State } from "@/types"
+import { editCharacterFormSchema } from "@/utils/validation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Autocomplete, Button, Stack, TextField } from "@mui/material"
+import { Button, Stack, TextField } from "@mui/material"
 import Link from "next/link"
 import { redirect } from "next/navigation"
-import { use, useEffect } from "react"
+import { useEffect } from "react"
 import { useFormState } from "react-dom"
 import { Controller, useForm } from "react-hook-form"
 
-type EditQuestFormValues = {
+type EditCharacterFormValues = {
     id: number
     name: string
-    description: string
-    place: number
+    description: string | null
+    info: string | null
 }
 
-export type EditQuestFormProps = {
+export type EditCharacterFormProps = {
     action: (prevState: State | null, data: FormData) => Promise<State>
-    placeOptions: AutocompleteOption[]
-    defaultValues: EditQuestFormValues
+    defaultValues: EditCharacterFormValues
 }
 
-export const EditQuestForm = ({
+export const EditCharacterForm = ({
     action,
-    defaultValues,
-    placeOptions
-}: EditQuestFormProps) => {
+    defaultValues
+}: EditCharacterFormProps) => {
     const [state, formAction] = useFormState<State, FormData>(action, null)
 
-    const { formState, control, setError } = useForm<EditQuestFormValues>({
+    const { formState, control, setError } = useForm<EditCharacterFormValues>({
         mode: 'all',
-        resolver: zodResolver(editQuestFormSchema),
+        resolver: zodResolver(editCharacterFormSchema),
         defaultValues
     })
 
     useEffect(() => {
         if (state?.status === "success") {
-            redirect('/app/quests')
+            redirect('/app/characters')
         }
 
         if (state?.status === "error") {
             state.errors?.forEach((error) => {
-                setError(error.path as keyof EditQuestFormValues, { message: error.message })
+                setError(error.path as keyof EditCharacterFormValues, { message: error.message })
             })
         }
 
@@ -69,6 +67,7 @@ export const EditQuestForm = ({
                     />
                 )}
             />
+
             <Controller
                 name='description'
                 control={control}
@@ -84,30 +83,22 @@ export const EditQuestForm = ({
                 )}
             />
 
-
-
             <Controller
-                name='place'
+                name='info'
                 control={control}
                 render={({ field }) => (
-                    <>
-                        <input type="hidden" name={field.name} value={field.value} />
-                        <Autocomplete
-                            options={placeOptions}
-                            value={placeOptions.find((option) => option.value === field.value)}
-                            onChange={(e, value) => field.onChange(value?.value || null)}
-                            renderInput={(params) => <TextField {...params} placeholder="Place" />}
-                        />
-                    </>
+                    <TextField
+                        {...field}
+                        multiline
+                        rows={4}
+                        placeholder="Info"
+                        error={!!formState.errors.info}
+                        helperText={formState.errors.info ? formState.errors.info.message : ' '}
+                    />
                 )}
             />
 
-            <Button
-                size="large"
-                type="submit"
-                variant="contained"
-                disabled={!formState.isValid}
-            >
+            <Button size="large" type="submit" variant="contained" color="primary">
                 Submit
             </Button>
             <Button
@@ -115,7 +106,7 @@ export const EditQuestForm = ({
                 variant="contained"
                 color="secondary"
                 LinkComponent={Link}
-                href="/app/quests"
+                href="/app/characters"
             >
                 Cancel
             </Button>

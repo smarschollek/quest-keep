@@ -1,8 +1,8 @@
 import Database from "better-sqlite3";
-import { eq, inArray } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 import * as schema from "../../db/schema";
-import { Place, Quest, User } from "@/types";
+import { Character, Place, Quest, User } from "@/types";
 import { Pool } from "pg";
 import { PageRequest } from "@/components/DataTable";
 
@@ -111,6 +111,47 @@ export const getQuestById = async (id: number) : Promise<Quest | undefined> => {
             place: true
         }
     })   
+}
+
+//#endregion
+
+//#region Characters
+
+export const createCharacter = async (name: string, description: string, info: string, userId: number) : Promise<void> => {    
+    await db.insert(schema.characters).values({
+        name,
+        userId,
+        description,
+        info
+    }).returning()
+}
+
+export const updateCharacter = async (id: number, name: string, description: string, info: string) : Promise<void> => {
+    await db.update(schema.characters).set({
+        name,
+        description,
+        info
+    }).where(eq(schema.characters.id, id)).returning()
+
+}
+
+export const deleteCharacters = async (ids: number[]) : Promise<void> => {
+    await db.delete(schema.characters).where(inArray(schema.characters.id, ids)).returning()
+}
+
+export const getCharactersForUser = async (userId: number) : Promise<Character[]> => {
+    return await db.query.characters.findMany({
+        where: eq(schema.characters.userId, userId)
+    })
+}
+
+export const getCharacterById = async (id: number, userId: number) : Promise<Character | undefined> => {
+    return await db.query.characters.findFirst({
+        where: and(
+            eq(schema.characters.id, id),
+            eq(schema.characters.userId, userId),
+        )
+    }) 
 }
 
 //#endregion
