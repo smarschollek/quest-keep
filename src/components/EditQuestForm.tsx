@@ -1,8 +1,10 @@
 "use client"
+import { ImageUpload } from "@/components/ImageUpload"
 import { AutocompleteOption, State } from "@/types"
 import { editQuestFormSchema } from "@/utils/validation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Autocomplete, Button, Stack, TextField } from "@mui/material"
+import { CloudUpload } from "@mui/icons-material"
+import { Autocomplete, Box, Button, Grid, Stack, TextField, styled } from "@mui/material"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import { use, useEffect } from "react"
@@ -14,6 +16,7 @@ type EditQuestFormValues = {
     name: string
     description: string
     place: number
+    image?: string
 }
 
 export type EditQuestFormProps = {
@@ -29,7 +32,7 @@ export const EditQuestForm = ({
 }: EditQuestFormProps) => {
     const [state, formAction] = useFormState<State, FormData>(action, null)
 
-    const { formState, control, setError } = useForm<EditQuestFormValues>({
+    const { formState, control, setError, watch } = useForm<EditQuestFormValues>({
         mode: 'all',
         resolver: zodResolver(editQuestFormSchema),
         defaultValues
@@ -49,76 +52,91 @@ export const EditQuestForm = ({
     }, [setError, state])
 
     return (
-        <Stack component={'form'} action={formAction} spacing={2}>
-            <Controller
-                name='id'
-                control={control}
-                render={({ field }) => (<input type="hidden" name={field.name} value={field.value} />)}
-            />
-
-            <Controller
-                name='name'
-                control={control}
-                render={({ field }) => (
-                    <TextField
-                        {...field}
-                        autoComplete="off"
-                        placeholder="Name"
-                        error={!!formState.errors.name}
-                        helperText={formState.errors.name ? formState.errors.name.message : ' '}
+        <Grid container component={'form'} action={formAction} spacing={2}>
+            <Grid item xs={6}>
+                <Stack spacing={2}>
+                    <Controller
+                        name='id'
+                        control={control}
+                        render={({ field }) => (<input type="hidden" name={field.name} value={field.value} />)}
                     />
-                )}
-            />
-            <Controller
-                name='description'
-                control={control}
-                render={({ field }) => (
-                    <TextField
-                        {...field}
-                        multiline
-                        rows={4}
-                        placeholder="Description"
-                        error={!!formState.errors.description}
-                        helperText={formState.errors.description ? formState.errors.description.message : ' '}
+
+                    <Controller
+                        name='name'
+                        control={control}
+                        render={({ field }) => (
+                            <TextField
+                                {...field}
+                                autoComplete="off"
+                                placeholder="Name"
+                                error={!!formState.errors.name}
+                                helperText={formState.errors.name ? formState.errors.name.message : ' '}
+                            />
+                        )}
                     />
-                )}
-            />
+                    <Controller
+                        name='description'
+                        control={control}
+                        render={({ field }) => (
+                            <TextField
+                                {...field}
+                                multiline
+                                rows={4}
+                                placeholder="Description"
+                                error={!!formState.errors.description}
+                                helperText={formState.errors.description ? formState.errors.description.message : ' '}
+                            />
+                        )}
+                    />
 
 
 
-            <Controller
-                name='place'
-                control={control}
-                render={({ field }) => (
-                    <>
-                        <input type="hidden" name={field.name} value={field.value} />
-                        <Autocomplete
-                            options={placeOptions}
-                            value={placeOptions.find((option) => option.value === field.value)}
-                            onChange={(e, value) => field.onChange(value?.value || null)}
-                            renderInput={(params) => <TextField {...params} placeholder="Place" />}
-                        />
-                    </>
-                )}
-            />
-
-            <Button
-                size="large"
-                type="submit"
-                variant="contained"
-                disabled={!formState.isValid}
-            >
-                Submit
-            </Button>
-            <Button
-                size="large"
-                variant="contained"
-                color="secondary"
-                LinkComponent={Link}
-                href="/app/quests"
-            >
-                Cancel
-            </Button>
-        </Stack>
+                    <Controller
+                        name='place'
+                        control={control}
+                        render={({ field }) => (
+                            <>
+                                <input type="hidden" name={field.name} value={field.value} />
+                                <Autocomplete
+                                    options={placeOptions}
+                                    value={placeOptions.find((option) => option.value === field.value)}
+                                    onChange={(e, value) => field.onChange(value?.value || null)}
+                                    renderInput={(params) => <TextField {...params} placeholder="Place" />}
+                                />
+                            </>
+                        )}
+                    />
+                </Stack>
+            </Grid>
+            <Grid item xs={6}>
+                <Box marginTop={2}>
+                    <ImageUpload
+                        imageName={defaultValues?.image ?? undefined}
+                    />
+                </Box>
+            </Grid>
+            <Grid item xs={12}>
+                <Stack spacing={2}>
+                    <hr />
+                    <Button
+                        size="large"
+                        type="submit"
+                        variant="contained"
+                        disabled={!formState.isValid}
+                    >
+                        Submit
+                    </Button>
+                    <Button
+                        size="large"
+                        variant="contained"
+                        color="secondary"
+                        LinkComponent={Link}
+                        href="/app/quests"
+                    >
+                        Cancel
+                    </Button>
+                </Stack>
+            </Grid>
+        </Grid>
     )
 }

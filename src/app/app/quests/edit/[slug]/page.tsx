@@ -23,7 +23,8 @@ export default async function AddQuestPage({ params }: { params: { slug: string 
                         id: quest.id,
                         name: quest.name,
                         description: quest.description ?? '',
-                        place: quest.placeId
+                        place: quest.placeId,
+                        image: quest.image ?? undefined
                     }}
                     placeOptions={placeOptions}
                 />

@@ -63,20 +63,22 @@ export const deletePlaces = async (ids: number[]) : Promise<void> => {
 
 //#region Quests
 
-export const addQuest = async (name: string, description: string, placeId: number, creatorId: number) : Promise<void> => {
+export const addQuest = async (name: string, description: string, placeId: number, creatorId: number, image: string) : Promise<void> => {
     await db.insert(schema.quests).values({
         name,
         description,
         placeId,
-        creatorId
+        creatorId,
+        image
     }).returning()
 }
 
-export const updateQUest = async (id: number, name: string, description: string, placeId: number) : Promise<void> => {
+export const updateQUest = async (id: number, name: string, description: string, placeId: number, image: string) : Promise<void> => {
     await db.update(schema.quests).set({
         name,
         description,
-        placeId
+        placeId,
+        image
     }).where(eq(schema.quests.id, id)).returning()
 }
 
