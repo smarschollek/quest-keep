@@ -18,7 +18,8 @@ export default async function AddQuestPage() {
                         id: -1,
                         name: '',
                         description: '',
-                        place: -1
+                        place: -1,
+                        status: 0
                     }}
                     placeOptions={placeOptions}
                 />

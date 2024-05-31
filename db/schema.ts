@@ -1,6 +1,6 @@
 import { relations } from "drizzle-orm";
 import { pgTable } from "drizzle-orm/pg-core";
-import { serial, text } from "drizzle-orm/pg-core";
+import { serial, text, integer } from "drizzle-orm/pg-core";
 
 //#region users
 
@@ -9,6 +9,7 @@ export const users = pgTable('users', {
     name: text('name').notNull(),
     email: text('email').notNull(),
     password: text('password').notNull(),
+    roles: text('role').notNull().default('user')
 })
 
 export const userRelations = relations(users, ({one, many}) => ({
@@ -43,6 +44,7 @@ export const quests = pgTable('quests', {
     image: text('image'),
     placeId: serial('place_id').references(() => places.id, {onDelete: 'cascade'}).notNull(),
     creatorId: serial('creator_id').references(() => users.id, {onDelete: 'cascade'}).notNull(),
+    status: integer('status').notNull().default(0)
 })
 
 export const questRelations = relations(quests, ({one}) => ({

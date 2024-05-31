@@ -3,11 +3,10 @@ import { ImageUpload } from "@/components/ImageUpload"
 import { AutocompleteOption, State } from "@/types"
 import { editQuestFormSchema } from "@/utils/validation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { CloudUpload } from "@mui/icons-material"
-import { Autocomplete, Box, Button, Grid, Stack, TextField, styled } from "@mui/material"
+import { Autocomplete, Box, Button, Grid, MenuItem, Select, Stack, TextField } from "@mui/material"
 import Link from "next/link"
 import { redirect } from "next/navigation"
-import { use, useEffect } from "react"
+import { useEffect } from "react"
 import { useFormState } from "react-dom"
 import { Controller, useForm } from "react-hook-form"
 
@@ -17,6 +16,7 @@ type EditQuestFormValues = {
     description: string
     place: number
     image?: string
+    status: 0 | 1 | 2
 }
 
 export type EditQuestFormProps = {
@@ -106,6 +106,21 @@ export const EditQuestForm = ({
                             </>
                         )}
                     />
+
+                    <Controller
+                        name='status'
+                        control={control}
+                        render={({ field }) => (
+                            <Select
+                                {...field}
+                                labelId="StatusLabel"
+                                id="Status"
+                            >
+                                <MenuItem value={0}>Planned</MenuItem>
+                                <MenuItem value={1}>Active</MenuItem>
+                                <MenuItem value={2}>Completed</MenuItem>
+                            </Select>
+                        )} />
                 </Stack>
             </Grid>
             <Grid item xs={6}>

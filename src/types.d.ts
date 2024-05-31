@@ -10,6 +10,7 @@ export type Place = {
     name: string
     description: string | null
     image: string | null
+    creatorId: number
 }
 
 export type Quest = {
@@ -19,6 +20,7 @@ export type Quest = {
     image: string | null
     placeId: number
     creatorId: number
+    status: 0 | 1 | 2
 }
 
 export type Character = {

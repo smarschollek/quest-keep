@@ -1,4 +1,3 @@
-import Database from "better-sqlite3";
 import { and, eq, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 import * as schema from "../../db/schema";
@@ -12,12 +11,8 @@ const pool = new Pool({
 
 const db = drizzle(pool, { schema });
 
-export const addUser = async (username: string, email: string, password: string) : Promise<void> => {
-    await db.insert(schema.users).values({
-            email: email,
-            name: username,
-            password: password
-        }).returning();
+export const addUser = async (user: Omit<User, 'id'>) : Promise<void> => {
+    await db.insert(schema.users).values(user).returning();
 }
 
 export const checkIfEmailIsFree = async (email: string) : Promise<boolean> => {
@@ -44,22 +39,13 @@ export const getUserFromDb = async (email: string) : Promise<User | undefined> =
 
 //#region Places
 
-export const addPlace = async (name: string, description: string, image: string, creatorId: number) : Promise<void> => {
-    await db.insert(schema.places).values({
-        name,
-        description,
-        image,
-        creatorId
-    }).returning()
+export const addPlace = async (place: Omit<Place, 'id'>) : Promise<void> => {
+    await db.insert(schema.places).values(place).returning()
 
 }
 
-export const updatePlace = async (id: number, name: string, description: string, image: string | null) : Promise<void> => {
-    await db.update(schema.places).set({
-        name,
-        description,
-        image
-    }).where(eq(schema.places.id, id)).returning()
+export const updatePlace = async (id: number, place: Omit<Place, 'id' | 'creatorId'>) : Promise<void> => {
+    await db.update(schema.places).set(place).where(eq(schema.places.id, id)).returning()
 }
 
 export const getPlaceById = async (id: number) : Promise<Place | undefined> => {
@@ -96,23 +82,12 @@ export const deletePlaces = async (ids: number[]) : Promise<void> => {
 
 //#region Quests
 
-export const addQuest = async (name: string, description: string | undefined, placeId: number, creatorId: number, image: string | null) : Promise<void> => {
-    await db.insert(schema.quests).values({
-        name,
-        description,
-        placeId,
-        creatorId,
-        image
-    }).returning()
+export const addQuest = async (quest: Omit<Quest, 'id'>) : Promise<void> => {
+    await db.insert(schema.quests).values(quest).returning()
 }
 
-export const updateQUest = async (id: number, name: string, description: string | undefined, placeId: number, image: string | null) : Promise<void> => {
-    await db.update(schema.quests).set({
-        name,
-        description,
-        placeId,
-        image
-    }).where(eq(schema.quests.id, id)).returning()
+export const updateQuest = async (id: number, quest: Omit<Quest, 'id' | 'creatorId'>) : Promise<void> => {
+    await db.update(schema.quests).set(quest).where(eq(schema.quests.id, id)).returning()
 }
 
 export const getQuests = async (request: PageRequest) : Promise<Place[]> => {
@@ -145,28 +120,19 @@ export const getQuestById = async (id: number) : Promise<Quest | undefined> => {
             creator: true,
             place: true
         }
-    })   
+    }) as Quest | undefined
 }
 
 //#endregion
 
 //#region Characters
 
-export const createCharacter = async (name: string, description: string, info: string, userId: number) : Promise<void> => {    
-    await db.insert(schema.characters).values({
-        name,
-        userId,
-        description,
-        info
-    }).returning()
+export const createCharacter = async (character : Omit<Character, 'id'>) : Promise<void> => {    
+    await db.insert(schema.characters).values(character).returning()
 }
 
-export const updateCharacter = async (id: number, name: string, description: string, info: string) : Promise<void> => {
-    await db.update(schema.characters).set({
-        name,
-        description,
-        info
-    }).where(eq(schema.characters.id, id)).returning()
+export const updateCharacter = async (id: number, character: Omit<Character, 'id' | 'userId'> ) : Promise<void> => {
+    await db.update(schema.characters).set(character).where(eq(schema.characters.id, id)).returning()
 
 }
 

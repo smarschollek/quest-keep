@@ -59,11 +59,11 @@ export const registerNewUser = async (prevState: State | null, data : FormData) 
         }
 
         const hashedPassword = await hashPassword(password);
-        await addUser(
-            username,
+        await addUser({        
+            name: username,
             email,
-            hashedPassword
-        )
+            password: hashedPassword
+        })
 
         return {
             status: 'success',

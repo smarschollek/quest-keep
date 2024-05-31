@@ -36,7 +36,12 @@ export const createPlaceAction = async (prevState: State | null, data: FormData)
         const session = await auth()
         const userId = parseInt(session?.user.id)
 
-        addPlace(name, description ?? '', imageName, userId)
+        addPlace({
+            name, 
+            description: description ?? '', 
+            image: imageName, 
+            creatorId: userId
+        })
 
         return {
             status: 'success',
@@ -74,7 +79,11 @@ export const updatePlaceAction = async (prevState: State | null, data: FormData)
             oldImageName: oldPlace.image
         })
 
-        updatePlace(id, name, description ?? '', imageName)
+        updatePlace(id, {
+            name, 
+            description: description ?? '', 
+            image: imageName
+        })
 
         return {
             status: 'success',

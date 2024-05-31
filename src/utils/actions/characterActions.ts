@@ -23,7 +23,12 @@ export const createCharacterAction = async (prevState : State, data : FormData) 
     const session = await auth()
     const creatorId = session?.user?.id
 
-    createCharacter(name, description ?? '', info ?? '', creatorId)
+    createCharacter({
+        name, 
+        description: description ?? '', 
+        info: info ?? '', 
+        userId: parseInt(creatorId),
+    })
 
     return {
         status: 'success',
@@ -38,7 +43,11 @@ export const updateCharacterAction = async (prevState : State, data : FormData) 
     const session = await auth()
     const creatorId = session?.user?.id
 
-    updateCharacter(id, name, description ?? '', info ?? '')
+    updateCharacter(id, {
+        name, 
+        description: description ?? '', 
+        info: info ?? ''
+    })
 
     return {
         status: 'success',

@@ -2,7 +2,7 @@
 
 import { auth } from "@/auth"
 import { State } from "@/types"
-import { addQuest, checkIfQuestNameIsFree, deleteQuests, getAllPlaces, getQuestById, updateQUest } from "@/utils/db"
+import { addQuest, checkIfQuestNameIsFree, deleteQuests, getAllPlaces, getQuestById, updateQuest } from "@/utils/db"
 import { saveImage } from "@/utils/image"
 import { convertZodErrorToState, editQuestFormSchema } from "@/utils/validation"
 import { revalidatePath } from "next/cache"
@@ -24,7 +24,7 @@ export const deleteQuestsAction = async (ids: number[]) => {
 
 export const updateQuestAction = async (prevState: State | null, data : FormData) : Promise<State> => {
     try {
-        const { id, description, name, place } = editQuestFormSchema.parse(data)
+        const { id, description, name, place, status } = editQuestFormSchema.parse(data)
 
         const oldQuest = await getQuestById(id)
 
@@ -53,13 +53,13 @@ export const updateQuestAction = async (prevState: State | null, data : FormData
             oldImageName: oldQuest.image
         })
 
-        await updateQUest(
-            id,
+        await updateQuest(id, {
             name,
-            description,
-            place,
-            imageName
-        )
+            description: description ?? '',
+            placeId: place,
+            image: imageName,
+            status: status as 0 | 1 | 2
+        })
 
         return {
             status: 'success',
@@ -101,13 +101,14 @@ export const createQuestAction = async (prevState: State | null, data : FormData
             oldImageName: null
         })
 
-        await addQuest(
-            name,
-            description ?? '',
-            place,
-            parseInt(session?.user?.id),
-            imageName
-        )
+        await addQuest({
+            name: name ?? '',
+            description: description ?? '',
+            placeId: place,
+            creatorId: parseInt(session?.user?.id),
+            image: imageName,
+            status: 0
+        })
         
         return {
             status: 'success',

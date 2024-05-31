@@ -24,7 +24,8 @@ export default async function EditQuestPage({ params }: { params: { slug: string
                         name: quest.name,
                         description: quest.description ?? '',
                         place: quest.placeId,
-                        image: quest.image ?? undefined
+                        image: quest.image ?? undefined,
+                        status: quest.status
                     }}
                     placeOptions={placeOptions}
                 />
