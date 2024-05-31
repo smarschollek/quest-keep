@@ -3,10 +3,10 @@
 import { auth } from "@/auth"
 import { State } from "@/types"
 import { addQuest, checkIfQuestNameIsFree, deleteQuests, getAllPlaces, getQuestById, updateQUest } from "@/utils/db"
+import { saveImage } from "@/utils/image"
 import { convertZodErrorToState, editQuestFormSchema } from "@/utils/validation"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
-import sharp from "sharp"
 import { ZodError } from "zod"
 
 export const redirectToEditQuestAction = (id: number) => {
@@ -47,25 +47,18 @@ export const updateQuestAction = async (prevState: State | null, data : FormData
             }
         }
 
-        let imageName = oldQuest.image
-        const image = data.get('image') as File
-
-        if(image) {
-            const hasImageChanged = image && image.name !== 'undefined'
-         
-            if(hasImageChanged) {
-                const buffer = await image.arrayBuffer()
-                await sharp(buffer, { failOnError: false }).toFile(`./public/uploads/quests/${image.name}`)
-                imageName = image.name
-            }
-        }
+        const imageName = await saveImage({
+            image: data.get('image') as File,
+            folder: 'quests',
+            oldImageName: oldQuest.image
+        })
 
         await updateQUest(
             id,
             name,
-            description ?? '',
+            description,
             place,
-            imageName ?? ''
+            imageName
         )
 
         return {
@@ -102,21 +95,20 @@ export const createQuestAction = async (prevState: State | null, data : FormData
             }
         }
 
-        const image = data.get('image') as File
+        const imageName = await saveImage({
+            image: data.get('image') as File,
+            folder: 'quests',
+            oldImageName: null
+        })
 
         await addQuest(
             name,
             description ?? '',
             place,
             parseInt(session?.user?.id),
-            image?.name ?? ''
+            imageName
         )
-
-        if(image) {
-            const buffer = await image.arrayBuffer()
-            await sharp(buffer, { failOnError: false }).toFile(`./public/uploads/quests/${image.name}`)
-        }
-
+        
         return {
             status: 'success',
             message: 'Quest created'

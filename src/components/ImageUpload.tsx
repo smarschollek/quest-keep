@@ -1,7 +1,7 @@
 "use client"
-import { CloudUpload } from "@mui/icons-material"
-import { Box, Button, Stack, Typography, styled } from "@mui/material"
-import { ChangeEvent, useEffect, useState } from "react"
+import { CloudUpload, Delete, Remove } from "@mui/icons-material"
+import { Box, Button, ButtonGroup, Stack, Typography, styled } from "@mui/material"
+import { ChangeEvent, useEffect, useRef, useState } from "react"
 
 const InvisibleInput = styled('input')({
     position: 'absolute',
@@ -13,17 +13,20 @@ const InvisibleInput = styled('input')({
 })
 
 export type ImageUploadProps = {
+    folder: 'quests' | 'places'
     imageName?: string
 }
 
-export const ImageUpload = ({ imageName }: ImageUploadProps) => {
+export const ImageUpload = ({ imageName, folder }: ImageUploadProps) => {
     const [selectedImage, setSelectedImage] = useState<string | ArrayBuffer | null>(null);
 
     useEffect(() => {
         if (imageName) {
-            setSelectedImage(`/uploads/quests/${imageName}`)
+            setSelectedImage(`/uploads/${folder}/${imageName}`)
         }
-    }, [imageName])
+    }, [folder, imageName])
+
+    const fileInputRef = useRef<HTMLInputElement>(null)
 
     const handleImageChange = async (event: ChangeEvent<HTMLInputElement>) => {
         event.preventDefault()
@@ -37,10 +40,16 @@ export const ImageUpload = ({ imageName }: ImageUploadProps) => {
         }
     }
 
+    const clearImage = () => {
+        setSelectedImage(null)
+        if (fileInputRef.current) {
+            fileInputRef.current.value = ''
+        }
+    }
+
     return (
         <Stack spacing={2}>
             <Box
-
                 height={300}
                 width={'100%'}
                 color={'text.secondary'}
@@ -61,16 +70,30 @@ export const ImageUpload = ({ imageName }: ImageUploadProps) => {
                     </Typography>
                 )}
             </Box>
-            <Button
-                component="label"
-                role={undefined}
-                variant="contained"
-                tabIndex={-1}
-                startIcon={<CloudUpload />}
+            <ButtonGroup
+                sx={{ width: '100%' }}
             >
-                Upload Image
-                <InvisibleInput name="image" type="file" onChange={handleImageChange} accept="image/*" />
-            </Button>
-        </Stack>
+                <Button
+                    component="label"
+                    role={undefined}
+                    variant="contained"
+                    tabIndex={-1}
+                    startIcon={<CloudUpload />}
+                    sx={{ width: '50%' }}
+                >
+                    Upload Image
+                    <InvisibleInput name="image" type="file" onChange={handleImageChange} accept="image/*" ref={fileInputRef} />
+                </Button>
+                <Button
+                    startIcon={<Delete />}
+                    variant="contained"
+                    color="secondary"
+                    sx={{ width: '50%' }}
+                    onClick={clearImage}
+                >
+                    Remove
+                </Button>
+            </ButtonGroup>
+        </Stack >
     )
 }

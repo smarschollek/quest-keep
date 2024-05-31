@@ -44,6 +44,39 @@ export const getUserFromDb = async (email: string) : Promise<User | undefined> =
 
 //#region Places
 
+export const addPlace = async (name: string, description: string, image: string, creatorId: number) : Promise<void> => {
+    await db.insert(schema.places).values({
+        name,
+        description,
+        image,
+        creatorId
+    }).returning()
+
+}
+
+export const updatePlace = async (id: number, name: string, description: string, image: string | null) : Promise<void> => {
+    await db.update(schema.places).set({
+        name,
+        description,
+        image
+    }).where(eq(schema.places.id, id)).returning()
+}
+
+export const getPlaceById = async (id: number) : Promise<Place | undefined> => {
+    return await db.query.places.findFirst({
+        where: eq(schema.places.id, id)
+    })
+}
+
+export const checkIfPlaceNameIsFree = async (name: string) : Promise<boolean> => {
+    const place = await db.query.places.findFirst({
+        where: eq(schema.places.name, name)
+    })
+
+    return place === undefined
+
+}
+
 export const getPlacesPaged = async (request: PageRequest) : Promise<Place[]> => {
     return await db.query.places.findMany({
         offset: request.pageIndex * request.pageSize,
@@ -63,7 +96,7 @@ export const deletePlaces = async (ids: number[]) : Promise<void> => {
 
 //#region Quests
 
-export const addQuest = async (name: string, description: string, placeId: number, creatorId: number, image: string) : Promise<void> => {
+export const addQuest = async (name: string, description: string | undefined, placeId: number, creatorId: number, image: string | null) : Promise<void> => {
     await db.insert(schema.quests).values({
         name,
         description,
@@ -73,7 +106,7 @@ export const addQuest = async (name: string, description: string, placeId: numbe
     }).returning()
 }
 
-export const updateQUest = async (id: number, name: string, description: string, placeId: number, image: string) : Promise<void> => {
+export const updateQUest = async (id: number, name: string, description: string | undefined, placeId: number, image: string | null) : Promise<void> => {
     await db.update(schema.quests).set({
         name,
         description,

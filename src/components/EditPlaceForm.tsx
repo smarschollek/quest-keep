@@ -1,54 +1,48 @@
 "use client"
 import { ImageUpload } from "@/components/ImageUpload"
-import { AutocompleteOption, State } from "@/types"
-import { editQuestFormSchema } from "@/utils/validation"
+import { State } from "@/types"
+import { editPlaceFormSchema } from "@/utils/validation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { CloudUpload } from "@mui/icons-material"
-import { Autocomplete, Box, Button, Grid, Stack, TextField, styled } from "@mui/material"
-import Link from "next/link"
+import { Box, Button, Grid, Link, Stack, TextField } from "@mui/material"
 import { redirect } from "next/navigation"
-import { use, useEffect } from "react"
+
+import { useEffect } from "react"
 import { useFormState } from "react-dom"
 import { Controller, useForm } from "react-hook-form"
 
-type EditQuestFormValues = {
+type EditPlaceFormValues = {
     id: number
     name: string
     description: string
-    place: number
     image?: string
 }
 
-export type EditQuestFormProps = {
+export type EditPlaceFormProps = {
+    defaultValues: EditPlaceFormValues
     action: (prevState: State | null, data: FormData) => Promise<State>
-    placeOptions: AutocompleteOption[]
-    defaultValues: EditQuestFormValues
 }
 
-export const EditQuestForm = ({
-    action,
-    defaultValues,
-    placeOptions
-}: EditQuestFormProps) => {
+export const EditPlaceForm = ({ defaultValues, action }: EditPlaceFormProps) => {
     const [state, formAction] = useFormState<State, FormData>(action, null)
 
-    const { formState, control, setError, watch } = useForm<EditQuestFormValues>({
+    const { control, formState, setError } = useForm<EditPlaceFormValues>({
         mode: 'all',
-        resolver: zodResolver(editQuestFormSchema),
+        resolver: zodResolver(editPlaceFormSchema),
         defaultValues
     })
 
     useEffect(() => {
-        if (state?.status === "success") {
-            redirect('/app/quests')
-        }
+        if (state) {
+            if (state.status === 'success') {
+                redirect('/app/places')
+            }
 
-        if (state?.status === "error") {
-            state.errors?.forEach((error) => {
-                setError(error.path as keyof EditQuestFormValues, { message: error.message })
-            })
+            if (state.status === 'error') {
+                state.errors?.forEach(error => {
+                    setError(error.path as keyof EditPlaceFormValues, { message: error.message })
+                })
+            }
         }
-
     }, [setError, state])
 
     return (
@@ -88,30 +82,12 @@ export const EditQuestForm = ({
                             />
                         )}
                     />
-
-
-
-                    <Controller
-                        name='place'
-                        control={control}
-                        render={({ field }) => (
-                            <>
-                                <input type="hidden" name={field.name} value={field.value} />
-                                <Autocomplete
-                                    options={placeOptions}
-                                    value={placeOptions.find((option) => option.value === field.value)}
-                                    onChange={(e, value) => field.onChange(value?.value || null)}
-                                    renderInput={(params) => <TextField {...params} placeholder="Place" />}
-                                />
-                            </>
-                        )}
-                    />
                 </Stack>
             </Grid>
             <Grid item xs={6}>
                 <Box marginTop={2}>
                     <ImageUpload
-                        folder="quests"
+                        folder='places'
                         imageName={defaultValues?.image ?? undefined}
                     />
                 </Box>
@@ -132,7 +108,7 @@ export const EditQuestForm = ({
                         variant="contained"
                         color="secondary"
                         LinkComponent={Link}
-                        href="/app/quests"
+                        href="/app/places"
                     >
                         Cancel
                     </Button>

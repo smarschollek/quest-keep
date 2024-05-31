@@ -3,7 +3,7 @@ import { updateQuestAction, createQuestAction } from "@/utils/actions/questActio
 import { getAllPlaces, getQuestById } from "@/utils/db";
 import { Box, Stack } from "@mui/material";
 
-export default async function AddQuestPage({ params }: { params: { slug: string } }) {
+export default async function EditQuestPage({ params }: { params: { slug: string } }) {
 
     const placeOptions = (await getAllPlaces()).map(place => ({ value: place.id, label: place.name }))
     const quest = await getQuestById(parseInt(params.slug))

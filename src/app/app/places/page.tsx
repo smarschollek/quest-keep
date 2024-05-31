@@ -1,5 +1,6 @@
 import { deletePlacesAction } from "@/app/app/places/actions";
 import { DataTable } from "@/components/DataTable";
+import { redirectToAddPlacePageAction, redirectToEditPlacePageAction } from "@/utils/actions/placesActions";
 import { getPlacesPaged } from "@/utils/db";
 import { Stack } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
@@ -21,8 +22,9 @@ export default async function PlacesPags() {
                 <DataTable
                     columns={columns}
                     rows={rows}
-
+                    addAction={redirectToAddPlacePageAction}
                     deleteAction={deletePlacesAction}
+                    editAction={redirectToEditPlacePageAction}
                 />
             </Stack>
         </main>
