@@ -126,6 +126,16 @@ export const getQuestById = async (id: number) : Promise<Quest | undefined> => {
     }) as Quest | undefined
 }
 
+export const getActiveQuests = async () : Promise<Quest[]> => {
+    return await db.query.quests.findMany({
+        where: eq(schema.quests.status, 1),
+        with: {
+            creator: true
+        }
+    })
+
+}
+
 //#endregion
 
 //#region Characters

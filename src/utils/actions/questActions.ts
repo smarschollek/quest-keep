@@ -67,7 +67,8 @@ export const updateQuestAction = async (prevState: State | null, data : FormData
         })
 
         revalidatePath('/app/quests')
-
+        revalidatePath('/app')
+        
         return {
             status: 'success',
             message: 'Quest updated'
@@ -118,6 +119,7 @@ export const createQuestAction = async (prevState: State | null, data : FormData
         })
         
         revalidatePath('/app/quests')
+        revalidatePath('/app')
 
         return {
             status: 'success',
