@@ -1,14 +1,9 @@
 import { deletePlacesAction } from "@/app/app/places/actions";
+import { columns } from "@/app/app/places/columns";
 import { DataTable } from "@/components/DataTable";
 import { redirectToAddPlacePageAction, redirectToEditPlacePageAction } from "@/utils/actions/placesActions";
 import { getPlacesPaged } from "@/utils/db";
 import { Stack } from "@mui/material";
-import { GridColDef } from "@mui/x-data-grid";
-
-const columns: GridColDef[] = [
-    { field: 'name', headerName: 'Name', width: 250 },
-    { field: 'description', headerName: 'Description', flex: 1 },
-]
 
 export default async function PlacesPags() {
     const rows = await getPlacesPaged({ pageIndex: 0, pageSize: 10 })

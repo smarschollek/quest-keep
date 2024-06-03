@@ -1,9 +1,9 @@
-import { and, eq, inArray } from "drizzle-orm";
+import { and, asc, eq, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 import * as schema from "../../db/schema";
-import { Character, Place, Quest, User } from "@/types";
 import { Pool } from "pg";
 import { PageRequest } from "@/components/DataTable";
+import { Character, Place, Quest, User } from "../../db/schema";
 
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
@@ -11,7 +11,7 @@ const pool = new Pool({
 
 const db = drizzle(pool, { schema });
 
-export const addUser = async (user: Omit<User, 'id'>) : Promise<void> => {
+export const addUser = async (user: Omit<User, 'id' | 'roles'>) : Promise<void> => {
     await db.insert(schema.users).values(user).returning();
 }
 
@@ -66,12 +66,13 @@ export const checkIfPlaceNameIsFree = async (name: string) : Promise<boolean> =>
 export const getPlacesPaged = async (request: PageRequest) : Promise<Place[]> => {
     return await db.query.places.findMany({
         offset: request.pageIndex * request.pageSize,
-        limit: request.pageSize
+        limit: request.pageSize,
+        orderBy: asc(schema.places.id)
     })
 }
 
 export const getAllPlaces = async () : Promise<Place[]> => {
-    return await db.query.places.findMany()
+    return db.select().from(schema.places).orderBy(asc(schema.places.id))
 }
 
 export const deletePlaces = async (ids: number[]) : Promise<void> => {
@@ -90,8 +91,8 @@ export const updateQuest = async (id: number, quest: Omit<Quest, 'id' | 'creator
     await db.update(schema.quests).set(quest).where(eq(schema.quests.id, id)).returning()
 }
 
-export const getQuests = async (request: PageRequest) : Promise<Place[]> => {
-    return await db.query.quests.findMany({
+export const getQuests = async (request: PageRequest) : Promise<Quest[]> => {
+    const data = await db.query.quests.findMany({
         offset: request.pageIndex * request.pageSize,
         limit: request.pageSize,
         with: {
@@ -99,6 +100,8 @@ export const getQuests = async (request: PageRequest) : Promise<Place[]> => {
             place: true
         }
     })
+
+    return data
 }
 
 export const deleteQuests = async (ids: number[]) : Promise<void> => {

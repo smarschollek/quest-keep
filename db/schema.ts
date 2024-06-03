@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm";
+import { InferSelectModel, relations } from "drizzle-orm";
 import { pgTable } from "drizzle-orm/pg-core";
 import { serial, text, integer } from "drizzle-orm/pg-core";
 
@@ -18,6 +18,8 @@ export const userRelations = relations(users, ({one, many}) => ({
     characters: many(characters)
 }))
 
+export type User = InferSelectModel<typeof users>
+
 //#endregion
 
 //#region places
@@ -34,6 +36,9 @@ export const placeRelations = relations(places, ({one, many}) => ({
     creator: one(users),
     quests: many(quests)
 }))
+
+export type Place = InferSelectModel<typeof places>
+
 //#endregion
 
 //#region quests
@@ -58,6 +63,8 @@ export const questRelations = relations(quests, ({one}) => ({
     })
 }))
 
+export type Quest = InferSelectModel<typeof quests>
+
 //#endregion
 
 //#region characters
@@ -76,5 +83,7 @@ export const characterRelations = relations(characters, ({one}) => ({
         references: [users.id]
     })
 }))
+
+export type Character = InferSelectModel<typeof characters>
 
 //#endregion

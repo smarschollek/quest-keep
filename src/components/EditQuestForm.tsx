@@ -5,7 +5,7 @@ import { editQuestFormSchema } from "@/utils/validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Autocomplete, Box, Button, Grid, MenuItem, Select, Stack, TextField } from "@mui/material"
 import Link from "next/link"
-import { redirect } from "next/navigation"
+import { RedirectType, redirect } from "next/navigation"
 import { useEffect } from "react"
 import { useFormState } from "react-dom"
 import { Controller, useForm } from "react-hook-form"
@@ -16,7 +16,7 @@ type EditQuestFormValues = {
     description: string
     place: number
     image?: string
-    status: 0 | 1 | 2
+    status: number
 }
 
 export type EditQuestFormProps = {
@@ -32,21 +32,23 @@ export const EditQuestForm = ({
 }: EditQuestFormProps) => {
     const [state, formAction] = useFormState<State, FormData>(action, null)
 
-    const { formState, control, setError, watch } = useForm<EditQuestFormValues>({
+    const { formState, control, setError } = useForm<EditQuestFormValues>({
         mode: 'all',
         resolver: zodResolver(editQuestFormSchema),
         defaultValues
     })
 
     useEffect(() => {
-        if (state?.status === "success") {
-            redirect('/app/quests')
-        }
+        if (state) {
+            if (state.status === "success") {
+                redirect('/app/quests', RedirectType.replace)
+            }
 
-        if (state?.status === "error") {
-            state.errors?.forEach((error) => {
-                setError(error.path as keyof EditQuestFormValues, { message: error.message })
-            })
+            if (state.status === "error") {
+                state.errors?.forEach((error) => {
+                    setError(error.path as keyof EditQuestFormValues, { message: error.message })
+                })
+            }
         }
 
     }, [setError, state])

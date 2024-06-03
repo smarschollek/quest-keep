@@ -27,9 +27,11 @@ export const ImageUpload = ({ imageName, folder }: ImageUploadProps) => {
     }, [folder, imageName])
 
     const fileInputRef = useRef<HTMLInputElement>(null)
+    const checkInputRef = useRef<HTMLInputElement>(null)
 
     const handleImageChange = async (event: ChangeEvent<HTMLInputElement>) => {
         event.preventDefault()
+        checkInputRef.current?.click()
         const file = event.target.files?.[0]
         if (file) {
             const reader = new FileReader()
@@ -44,6 +46,7 @@ export const ImageUpload = ({ imageName, folder }: ImageUploadProps) => {
         setSelectedImage(null)
         if (fileInputRef.current) {
             fileInputRef.current.value = ''
+            checkInputRef.current?.click()
         }
     }
 
@@ -83,6 +86,7 @@ export const ImageUpload = ({ imageName, folder }: ImageUploadProps) => {
                 >
                     Upload Image
                     <InvisibleInput name="image" type="file" onChange={handleImageChange} accept="image/*" ref={fileInputRef} />
+                    <InvisibleInput name="imageChanged" type="checkbox" ref={checkInputRef} />
                 </Button>
                 <Button
                     startIcon={<Delete />}

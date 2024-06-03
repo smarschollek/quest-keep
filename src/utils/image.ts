@@ -4,12 +4,17 @@ import fs from "node:fs/promises"
 export type SaveImageCommand = {
     image: File | undefined
     folder: string
-    oldImageName: string | null
+    oldImageName?: string
+    changed?: boolean
 }
 
 export const saveImage = async (command : SaveImageCommand): Promise<string> => {
 
-    const { image, folder, oldImageName } = command
+    const { changed, image, folder, oldImageName } = command
+
+    if(!changed) {
+        return oldImageName ?? ''
+    }
 
     if(oldImageName) {
         await deleteImage(oldImageName, folder)

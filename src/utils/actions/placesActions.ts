@@ -4,6 +4,7 @@ import { State } from "@/types";
 import { addPlace, checkIfPlaceNameIsFree, getPlaceById, updatePlace } from "@/utils/db";
 import { saveImage } from "@/utils/image";
 import { convertZodErrorToState, editPlaceFormSchema } from "@/utils/validation";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { ZodError } from "zod";
 
@@ -30,7 +31,7 @@ export const createPlaceAction = async (prevState: State | null, data: FormData)
         const imageName = await saveImage({
             image: data.get('image') as File,
             folder: 'places',
-            oldImageName: null
+            changed: true
         })
 
         const session = await auth()
@@ -42,6 +43,8 @@ export const createPlaceAction = async (prevState: State | null, data: FormData)
             image: imageName, 
             creatorId: userId
         })
+
+        revalidatePath('/app/places')
 
         return {
             status: 'success',
@@ -73,17 +76,21 @@ export const updatePlaceAction = async (prevState: State | null, data: FormData)
             }
         }
 
+        const imageChanged = data.get('imageChanged') === 'on'
         const imageName = await saveImage({
             image: data.get('image') as File,
             folder: 'places',
-            oldImageName: oldPlace.image
-        })
+            oldImageName: oldPlace.image ?? undefined,
+            changed: imageChanged
+       })
 
         updatePlace(id, {
             name, 
             description: description ?? '', 
             image: imageName
         })
+
+        revalidatePath('/app/places')
 
         return {
             status: 'success',

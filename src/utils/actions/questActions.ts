@@ -1,13 +1,15 @@
 "use server"
 
 import { auth } from "@/auth"
+import { PageRequest } from "@/components/DataTable"
 import { State } from "@/types"
-import { addQuest, checkIfQuestNameIsFree, deleteQuests, getAllPlaces, getQuestById, updateQuest } from "@/utils/db"
+import { addQuest, checkIfQuestNameIsFree, deleteQuests, getAllPlaces, getQuestById, getQuests, updateQuest } from "@/utils/db"
 import { saveImage } from "@/utils/image"
 import { convertZodErrorToState, editQuestFormSchema } from "@/utils/validation"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { ZodError } from "zod"
+import { Quest } from "../../../db/schema"
 
 export const redirectToEditQuestAction = (id: number) => {
     redirect('/app/quests/edit/' + id)
@@ -47,10 +49,13 @@ export const updateQuestAction = async (prevState: State | null, data : FormData
             }
         }
 
+        const imageChanged = data.get('imageChanged') === 'on'
+        
         const imageName = await saveImage({
             image: data.get('image') as File,
             folder: 'quests',
-            oldImageName: oldQuest.image
+            oldImageName: oldQuest.image ?? undefined,
+            changed: imageChanged
         })
 
         await updateQuest(id, {
@@ -60,6 +65,8 @@ export const updateQuestAction = async (prevState: State | null, data : FormData
             image: imageName,
             status: status as 0 | 1 | 2
         })
+
+        revalidatePath('/app/quests')
 
         return {
             status: 'success',
@@ -98,7 +105,7 @@ export const createQuestAction = async (prevState: State | null, data : FormData
         const imageName = await saveImage({
             image: data.get('image') as File,
             folder: 'quests',
-            oldImageName: null
+            changed: true
         })
 
         await addQuest({
@@ -110,6 +117,8 @@ export const createQuestAction = async (prevState: State | null, data : FormData
             status: 0
         })
         
+        revalidatePath('/app/quests')
+
         return {
             status: 'success',
             message: 'Quest created'
