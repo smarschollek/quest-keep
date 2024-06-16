@@ -1,7 +1,7 @@
 import { deletePlacesAction } from "@/app/app/places/actions";
 import { columns } from "@/app/app/places/columns";
 import { DataTable } from "@/components/DataTable";
-import { redirectToAddPlacePageAction, redirectToEditPlacePageAction } from "@/utils/actions/placesActions";
+import { redirectToAddPlacePageAction, redirectToEditPlacePageAction } from "@/actions/placesActions";
 import { getPlacesPaged } from "@/utils/db";
 import { Stack } from "@mui/material";
 

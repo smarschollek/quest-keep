@@ -3,7 +3,7 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import * as schema from "../../db/schema";
 import { Pool } from "pg";
 import { PageRequest } from "@/components/DataTable";
-import { Character, Place, Quest, User } from "../../db/schema";
+import { Character, Place, Quest, User, WithPlace, WithUser } from "../../db/schema";
 
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
@@ -44,7 +44,7 @@ export const addPlace = async (place: Omit<Place, 'id'>) : Promise<void> => {
 
 }
 
-export const updatePlace = async (id: number, place: Omit<Place, 'id' | 'creatorId'>) : Promise<void> => {
+export const updatePlace = async (id: number, place: Omit<Place, 'id' | 'userId'>) : Promise<void> => {
     await db.update(schema.places).set(place).where(eq(schema.places.id, id)).returning()
 }
 
@@ -87,7 +87,7 @@ export const addQuest = async (quest: Omit<Quest, 'id'>) : Promise<void> => {
     await db.insert(schema.quests).values(quest).returning()
 }
 
-export const updateQuest = async (id: number, quest: Omit<Quest, 'id' | 'creatorId'>) : Promise<void> => {
+export const updateQuest = async (id: number, quest: Omit<Quest, 'id' | 'userId'>) : Promise<void> => {
     await db.update(schema.quests).set(quest).where(eq(schema.quests.id, id)).returning()
 }
 
@@ -96,7 +96,7 @@ export const getQuests = async (request: PageRequest) : Promise<Quest[]> => {
         offset: request.pageIndex * request.pageSize,
         limit: request.pageSize,
         with: {
-            creator: true,
+            user: true,
             place: true
         }
     })
@@ -116,22 +116,23 @@ export const checkIfQuestNameIsFree = async (name: string) : Promise<boolean> =>
     return quest === undefined
 }
 
-export const getQuestById = async (id: number) : Promise<Quest | undefined> => {
+export const getQuestById = async (id: number) : Promise<WithPlace<WithUser<Quest>> | undefined> => {
     return await db.query.quests.findFirst({
         where: eq(schema.quests.id, id),
         with: {
-            creator: true,
+            user: true,
             place: true
         }
-    }) as Quest | undefined
+    }) as WithPlace<WithUser<Quest>> | undefined
 }
 
-export const getActiveQuests = async () : Promise<Quest[]> => {
+export const getActiveQuests = async () : Promise<WithUser<Quest>[]> => {
     return await db.query.quests.findMany({
         where: eq(schema.quests.status, 1),
         with: {
-            creator: true
-        }
+            user: true
+        },
+        orderBy: asc(schema.quests.id)
     })
 
 }

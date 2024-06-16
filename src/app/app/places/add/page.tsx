@@ -1,5 +1,5 @@
 import { EditPlaceForm } from "@/components/EditPlaceForm";
-import { createPlaceAction } from "@/utils/actions/placesActions";
+import { createPlaceAction } from "@/actions/placesActions";
 import { Box, Stack } from "@mui/material";
 
 export default function AddPlacePage() {

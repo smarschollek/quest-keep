@@ -41,7 +41,7 @@ export const createPlaceAction = async (prevState: State | null, data: FormData)
             name, 
             description: description ?? '', 
             image: imageName, 
-            creatorId: userId
+            userId
         })
 
         revalidatePath('/app/places')

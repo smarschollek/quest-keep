@@ -1,6 +1,6 @@
 import { InferSelectModel, relations } from "drizzle-orm";
 import { pgTable } from "drizzle-orm/pg-core";
-import { serial, text, integer } from "drizzle-orm/pg-core";
+import { serial, text, integer, timestamp } from "drizzle-orm/pg-core";
 
 //#region users
 
@@ -29,7 +29,7 @@ export const places = pgTable('places', {
     name: text('name').notNull(),
     description: text('description'),
     image: text('image'),
-    creatorId: serial('creator_id').references(() => users.id).notNull(),
+    userId: serial('user_id').references(() => users.id).notNull(),
 })
 
 export const placeRelations = relations(places, ({one, many}) => ({
@@ -48,13 +48,13 @@ export const quests = pgTable('quests', {
     description: text('description'),
     image: text('image'),
     placeId: serial('place_id').references(() => places.id, {onDelete: 'cascade'}).notNull(),
-    creatorId: serial('creator_id').references(() => users.id, {onDelete: 'cascade'}).notNull(),
+    userId: serial('user_id').references(() => users.id, {onDelete: 'cascade'}).notNull(),
     status: integer('status').notNull().default(0)
 })
 
 export const questRelations = relations(quests, ({one}) => ({
-    creator: one(users, {
-        fields: [quests.creatorId],
+    user: one(users, {
+        fields: [quests.userId],
         references: [users.id]
     }),
     place: one(places, { 
@@ -64,6 +64,14 @@ export const questRelations = relations(quests, ({one}) => ({
 }))
 
 export type Quest = InferSelectModel<typeof quests>
+
+export type WithPlace<T> = T & {
+    place: Place
+}
+
+export type WithUser<T> = T & {
+    user: User
+}
 
 //#endregion
 
@@ -85,5 +93,19 @@ export const characterRelations = relations(characters, ({one}) => ({
 }))
 
 export type Character = InferSelectModel<typeof characters>
+
+//#endregion
+
+//#region events
+
+export const events = pgTable('events', {
+    id: serial('id').primaryKey(),
+    eventType: integer('event_type').notNull(),
+    eventDate: timestamp('event_date').notNull().defaultNow(),
+    eventData: text('event_data').notNull(),
+    userId: serial('user_id').references(() => users.id, {onDelete: 'cascade'}).notNull(),
+})
+
+export type Event = InferSelectModel<typeof events>
 
 //#endregion

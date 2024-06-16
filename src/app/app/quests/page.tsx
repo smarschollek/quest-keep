@@ -1,6 +1,6 @@
 import { columns } from "@/app/app/quests/columns";
 import { DataTable } from "@/components/DataTable";
-import { deleteQuestsAction, redirectToAddQuestAction, redirectToEditQuestAction } from "@/utils/actions/questActions";
+import { deleteQuestsAction, redirectToAddQuestAction, redirectToEditQuestAction } from "@/actions/questActions";
 import { getQuests } from "@/utils/db";
 import { Stack } from "@mui/material";
 

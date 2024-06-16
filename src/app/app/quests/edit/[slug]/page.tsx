@@ -1,5 +1,5 @@
 import { EditQuestForm } from "@/components/EditQuestForm";
-import { updateQuestAction, createQuestAction } from "@/utils/actions/questActions";
+import { updateQuestAction, createQuestAction } from "@/actions/questActions";
 import { getAllPlaces, getQuestById } from "@/utils/db";
 import { Box, Stack } from "@mui/material";
 

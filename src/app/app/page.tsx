@@ -1,7 +1,8 @@
-import { LogoutButton } from "@/components/LogoutButton";
-import { QuestCard } from "@/components/QuestCard";
+import { DashboardCard } from "@/components/DashboardCard";
+import { EventTimeline } from "@/components/EventTimeline";
 import { getActiveQuests } from "@/utils/db";
-import { Stack, Typography } from "@mui/material";
+import { Api } from "@mui/icons-material";
+import { Avatar, Grid, List, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, Paper, Stack, Typography } from "@mui/material";
 
 export default async function Dashboard() {
 
@@ -9,17 +10,71 @@ export default async function Dashboard() {
 
     return (
         <main>
-            <Stack padding={2} spacing={3}>
-                <Typography variant="h5">Quests </Typography>
+            <Grid container spacing={1} padding={1}>
+                <Grid item xs={6} height={400}>
+                    <DashboardCard
+                        title="Quests"
+                    >
+                        <List
+                            sx={{
+                                height: 300,
+                                overflow: 'auto',
+                                scrollbarWidth: 'thin',
+                            }}
+                        >
+                            {activeQuests.map((quest) => (
+                                <ListItemButton key={quest.id} href={`/app/quests/details/${quest.id}`}>
+                                    {quest.image ? (
+                                        <ListItemAvatar>
+                                            <Avatar
+                                                alt={quest.name}
+                                                src={`uploads/quests/${quest.image}`}
+                                                sx={{
+                                                    width: 56,
+                                                    height: 56
+                                                }}
+                                            />
+                                        </ListItemAvatar>
+                                    ) : (
+                                        <ListItemAvatar
 
-                <Stack spacing={2} direction={'row'} overflow={'auto'}>
-                    {activeQuests.map(quest => (
-                        <QuestCard key={quest.id} quest={quest} />
-                    ))}
-                </Stack>
+                                        >
+                                            <Avatar
+                                                sx={{
+                                                    width: 56,
+                                                    height: 56,
 
-                <Typography variant="h5">Sessions </Typography>
-            </Stack>
-        </main>
+                                                }}
+                                            >
+                                                <Api
+                                                    htmlColor="white"
+                                                    fontSize="large"
+                                                />
+                                            </Avatar>
+                                        </ListItemAvatar>
+                                    )}
+
+                                    <ListItemText
+                                        secondaryTypographyProps={{
+                                            fontSize: 10
+                                        }}
+                                        primary={quest.name}
+                                        secondary={quest.user.name}
+                                        sx={{ paddingLeft: 1 }}
+                                    />
+                                </ListItemButton>
+                            ))}
+                        </List>
+                    </DashboardCard>
+                </Grid>
+                <Grid item xs={6}>
+                    <Paper>
+                        <Stack padding={1}>
+                            <Typography variant="h6">Sessions</Typography>
+                        </Stack>
+                    </Paper>
+                </Grid>
+            </Grid>
+        </main >
     )
 }

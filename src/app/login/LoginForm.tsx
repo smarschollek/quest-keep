@@ -1,6 +1,6 @@
 "use client"
 import { State } from "@/types"
-import { loginUser } from "@/utils/actions/authActions"
+import { loginUser } from "@/actions/authActions"
 import { loginFormSchema } from "@/utils/validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { VisibilityOff, Visibility } from "@mui/icons-material"

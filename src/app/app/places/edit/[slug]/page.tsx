@@ -1,5 +1,5 @@
 import { EditPlaceForm } from "@/components/EditPlaceForm";
-import { updatePlaceAction } from "@/utils/actions/placesActions";
+import { updatePlaceAction } from "@/actions/placesActions";
 import { getPlaceById } from "@/utils/db";
 import { Box, Stack } from "@mui/material";
 

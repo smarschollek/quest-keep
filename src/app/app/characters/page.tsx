@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { DataTable } from "@/components/DataTable";
-import { deleteCharactersAction, redirectToCreateCharacterPage, redirectToUpdateCharacterPage } from "@/utils/actions/characterActions";
+import { deleteCharactersAction, redirectToCreateCharacterPage, redirectToUpdateCharacterPage } from "@/actions/characterActions";
 import { getCharactersForUser } from "@/utils/db";
 import { Stack } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";

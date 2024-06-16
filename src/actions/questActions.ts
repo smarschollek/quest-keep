@@ -1,7 +1,6 @@
 "use server"
 
 import { auth } from "@/auth"
-import { PageRequest } from "@/components/DataTable"
 import { State } from "@/types"
 import { addQuest, checkIfQuestNameIsFree, deleteQuests, getAllPlaces, getQuestById, getQuests, updateQuest } from "@/utils/db"
 import { saveImage } from "@/utils/image"
@@ -9,7 +8,6 @@ import { convertZodErrorToState, editQuestFormSchema } from "@/utils/validation"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { ZodError } from "zod"
-import { Quest } from "../../../db/schema"
 
 export const redirectToEditQuestAction = (id: number) => {
     redirect('/app/quests/edit/' + id)
@@ -113,7 +111,7 @@ export const createQuestAction = async (prevState: State | null, data : FormData
             name: name ?? '',
             description: description ?? '',
             placeId: place,
-            creatorId: parseInt(session?.user?.id),
+            userId: parseInt(session?.user?.id),
             image: imageName,
             status: 0
         })

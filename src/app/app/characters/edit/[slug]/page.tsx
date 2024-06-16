@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { EditCharacterForm } from "@/components/EditCharacterForm";
-import { updateCharacterAction } from "@/utils/actions/characterActions";
+import { updateCharacterAction } from "@/actions/characterActions";
 import { getCharacterById } from "@/utils/db";
 import { Box, Stack } from "@mui/material";
 import { redirect } from "next/navigation";

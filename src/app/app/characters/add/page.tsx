@@ -1,5 +1,5 @@
 import { EditCharacterForm } from "@/components/EditCharacterForm";
-import { createCharacterAction } from "@/utils/actions/characterActions";
+import { createCharacterAction } from "@/actions/characterActions";
 import { Box, Stack } from "@mui/material";
 
 export default function AddCharacterPage() {
